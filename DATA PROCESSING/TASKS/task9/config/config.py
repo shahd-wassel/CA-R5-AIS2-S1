@@ -1,0 +1,5 @@
+COLS_TO_DROP = [
+    "PassengerId",
+    "Name",
+    "Ticket"
+]
