@@ -1,0 +1,91 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+class LinearRegressionGD:
+     def __init__(self,learningrate=0.001,n_iterations=100):
+          self.learningrate=learningrate
+          self.n_iterations=n_iterations
+          self.theta0=0
+          self.theta1=0
+          self.sse_data=[]
+     def fit(self,x,y):
+          n=len(x)
+          for i in range(self.n_iterations):
+               y_pred= self.theta0+self.theta1*x
+               error= y_pred-y
+               sse=np.sum(error**2)
+               self.sse_data.append(sse)
+               gradient_0 = (2 / n) * np.sum(error)
+               gradient_1 = (2 / n) * np.sum( x * error)
+               self.theta0 -= self.learningrate*gradient_0
+               self.theta1 -= self.learningrate*gradient_1
+     def predict(self,x):
+          return self.theta0+self.theta1*x
+     
+     def plot_training(self,x,y):
+          plt.figure(figsize=(8, 5))
+          plt.plot (range(1, self.n_iterations + 1), self.sse_data)
+          plt.xlabel("Iterations")
+          plt.ylabel("SSE")
+          plt.title("SSE over Iterations")
+          plt.grid()
+          plt.show()
+
+          plt.figure(figsize=(8, 5))
+          plt.scatter(x, y, label="Data Points")
+          y_pred = self.predict(x)
+          plt.plot(x,y_pred,label="Regression Line")
+          plt.xlabel("House Size (m²)")
+          plt.ylabel("House Price (thousands)")
+          plt.title("Linear Regression")
+          plt.legend()
+          plt.grid()
+          plt.show()
+
+
+x=[50,60,70,80,90]
+y=[150, 180, 210, 240, 270]
+x=np.array(x)
+y=np.array(y)
+print("x= ",x)
+print("y= ",y)
+
+model=LinearRegressionGD(0.0001,100)
+model.fit(x,y)
+print("learned values: ")
+print("theta0: ", model.theta0)
+print("theta1: ", model.theta1)
+
+house_size=70
+prediction=model.predict(house_size)
+print("predicted price= ",prediction)
+
+model.plot_training(x,y)
+#experiment
+largerate_model = LinearRegressionGD (learningrate=0.1,n_iterations=100)
+largerate_model.fit(x,y)
+print("Large Learning Rate:")
+print("theta_0:", largerate_model.theta0)
+print("theta_1:", largerate_model.theta1)
+print("Final SSE:", largerate_model.sse_data[-1])
+plt.figure(figsize=(8, 5))
+plt.plot(range(1, 101),largerate_model.sse_data)
+plt.xlabel("Iterations")
+plt.ylabel("SSE")
+plt.title("Large Learning Rate")
+plt.grid()
+plt.show()
+
+smallrate_model= LinearRegressionGD(learningrate=0.00001,n_iterations=100)
+smallrate_model.fit(x,y)
+print("\nSmall Learning Rate:")
+print("theta_0:", smallrate_model.theta0)
+print("theta_1:", smallrate_model.theta1)
+print("Final SSE:", smallrate_model.sse_data[-1])
+plt.figure(figsize=(8, 5))
+plt.plot(range(1, 101),largerate_model.sse_data)
+plt.xlabel("Iterations")
+plt.ylabel("SSE")
+plt.title("Small Learning Rate")
+plt.grid()
+plt.show()
